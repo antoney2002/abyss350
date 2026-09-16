@@ -1,0 +1,568 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  ShieldCheck, Truck, RotateCcw, X, ArrowRight, Menu, 
+  Anchor, Waves, Layers, Check, Sparkles, 
+  Mail, Phone, Globe, Package, Gauge, 
+  Briefcase, Link as LinkIcon, Wrench, CreditCard, Lock
+} from 'lucide-react';
+
+const PRODUCT_PRICE = 249.90;
+const MODEL_URL = "https://cdn.jsdelivr.net/gh/antoney2002/abyss350@main/untitled.glb";
+
+function AbyssModelViewer() {
+  const viewerRef = useRef(null);
+  const [progress, setProgress] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Inietta lo script di model-viewer dinamicamente per evitare blocchi al caricamento
+  useEffect(() => {
+    if (!customElements.get('model-viewer')) {
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js';
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  // Gestione esplicita degli eventi di caricamento per evitare blocchi della UI
+  useEffect(() => {
+    const viewer = viewerRef.current;
+    if (!viewer) return;
+
+    const handleProgress = (event) => {
+      // event.detail.totalProgress va da 0 a 1
+      const currentProgress = Math.round(event.detail.totalProgress * 100);
+      setProgress(currentProgress);
+      if (currentProgress >= 100) {
+        setIsLoaded(true);
+      }
+    };
+
+    const handleLoad = () => {
+      setIsLoaded(true);
+    };
+
+    viewer.addEventListener('progress', handleProgress);
+    viewer.addEventListener('load', handleLoad);
+
+    // Timeout di sicurezza: forza la rimozione del loader se l'evento si perde
+    const safetyTimeout = setTimeout(() => {
+      setIsLoaded(true);
+    }, 15000); // 15 secondi max
+
+    return () => {
+      viewer.removeEventListener('progress', handleProgress);
+      viewer.removeEventListener('load', handleLoad);
+      clearTimeout(safetyTimeout);
+    };
+  }, []);
+
+  return (
+    <div className="relative w-full h-full flex items-center justify-center">
+      {/* UI personalizzata di caricamento gestita da React */}
+      {!isLoaded && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 rounded-3xl z-50 transition-opacity duration-500">
+          <div className="relative w-16 h-16 mb-4">
+            <div className="absolute inset-0 border-4 border-cyan-500/20 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-[10px] font-mono text-cyan-400 font-bold">{progress}%</span>
+            </div>
+          </div>
+          <span className="text-slate-300 font-mono text-sm tracking-widest uppercase">Avvio 3D...</span>
+        </div>
+      )}
+
+      {/* <model-viewer> configurato per l'e-commerce */}
+      <model-viewer
+        ref={viewerRef}
+        src={MODEL_URL}
+        camera-controls
+        auto-rotate
+        rotation-per-second="15deg"
+        shadow-intensity="1"
+        shadow-softness="1"
+        camera-orbit="45deg 75deg 5m"
+        min-camera-orbit="auto 0deg auto"
+        max-camera-orbit="auto 90deg auto"
+        style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}
+        alt="Modello 3D interattivo ABYSS 350"
+      ></model-viewer>
+    </div>
+  );
+}
+
+function Header({ onOrderClick }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  return (
+    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-slate-950/90 border-b border-cyan-900/40">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        <a href="#" className="flex items-center gap-3 group shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-lime-400 flex items-center justify-center p-0.5 shadow-lg group-hover:scale-105 transition-transform">
+            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+              <Anchor className="w-5 h-5 text-cyan-400 group-hover:rotate-12 transition-transform" />
+            </div>
+          </div>
+          <div>
+            <span className="text-xl font-black tracking-tight text-white flex items-center gap-1.5">
+              ABYSS <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-lime-400 font-mono">350</span>
+            </span>
+          </div>
+        </a>
+
+        <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-300">
+          <a href="#hero" className="hover:text-cyan-400 transition-colors">Modello 3D</a>
+          <a href="#features" className="hover:text-cyan-400 transition-colors">Caratteristiche</a>
+          <a href="#pack" className="hover:text-cyan-400 transition-colors">Cosa è incluso</a>
+          <a href="#contatti" className="hover:text-cyan-400 transition-colors">Contatti</a>
+        </nav>
+
+        <div className="hidden md:flex items-center pl-6 border-l border-slate-800">
+          <button onClick={onOrderClick} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-lime-500 to-emerald-500 hover:from-lime-400 hover:to-emerald-400 text-slate-950 font-black text-xs uppercase shadow-lg transition-transform hover:scale-105">
+            <span>Ordina Ora</span>
+            <span className="border-l border-slate-900/30 pl-2">€{PRODUCT_PRICE.toFixed(2).replace('.', ',')}</span>
+          </button>
+        </div>
+
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 text-slate-300">
+          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
+      
+      {mobileMenuOpen && (
+        <div className="md:hidden px-4 py-4 bg-slate-950 border-b border-slate-800 space-y-3">
+          <a href="#hero" onClick={() => setMobileMenuOpen(false)} className="block text-slate-300 hover:text-cyan-400 text-sm font-semibold">Modello 3D</a>
+          <a href="#features" onClick={() => setMobileMenuOpen(false)} className="block text-slate-300 hover:text-cyan-400 text-sm font-semibold">Caratteristiche</a>
+          <a href="#pack" onClick={() => setMobileMenuOpen(false)} className="block text-slate-300 hover:text-cyan-400 text-sm font-semibold">Cosa è incluso</a>
+          <a href="#contatti" onClick={() => setMobileMenuOpen(false)} className="block text-slate-300 hover:text-cyan-400 text-sm font-semibold">Contatti</a>
+          <button onClick={() => { setMobileMenuOpen(false); onOrderClick(); }} className="w-full py-3 rounded-xl bg-gradient-to-r from-lime-400 to-emerald-400 text-slate-950 font-black text-sm uppercase shadow-lg mt-2">
+            Ordina Ora • €{PRODUCT_PRICE.toFixed(2).replace('.', ',')}
+          </button>
+        </div>
+      )}
+    </header>
+  );
+}
+
+function TrustBar() {
+  return (
+    <div className="bg-slate-900 border-b border-slate-800 py-3">
+      <div className="max-w-7xl mx-auto px-4 flex flex-wrap justify-center gap-6 text-[11px] font-semibold text-slate-300 uppercase tracking-wider">
+        <span className="flex items-center gap-2"><Truck className="w-4 h-4 text-cyan-400" /> Spedizione Express Italia</span>
+        <span className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-lime-400" /> Garanzia Ufficiale 24 Mesi</span>
+        <span className="flex items-center gap-2"><RotateCcw className="w-4 h-4 text-cyan-400" /> Reso Garantito 30 Giorni</span>
+      </div>
+    </div>
+  );
+}
+
+function HeroSection({ onOrderClick }) {
+  return (
+    <section id="hero" className="relative w-full pt-12 pb-24 overflow-hidden bg-gradient-to-b from-slate-950 via-[#031122] to-slate-950">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          
+          <div className="text-center lg:text-left">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-bold tracking-widest mb-6">
+              <Sparkles className="w-4 h-4" /> EDIZIONE 2026
+            </span>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6 tracking-tight">
+              L'Oceano Ti Chiama. <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-lime-400">
+                Rispondi con ABYSS.
+              </span>
+            </h1>
+            <p className="text-slate-300 text-base lg:text-lg mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              Il SUP gonfiabile extra-wide (350×89×15 cm) progettato per la stabilità assoluta. Perfetto per esplorazioni in famiglia o conversioni in kayak in pochi secondi.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+              <button onClick={onOrderClick} className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-lime-500 to-emerald-500 hover:from-lime-400 hover:to-emerald-400 text-slate-950 font-black text-lg uppercase tracking-wide shadow-xl shadow-lime-500/20 transition-transform hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
+                Acquista Subito
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          <div className="relative w-full aspect-square md:aspect-auto md:h-[500px] rounded-3xl bg-slate-900/40 border border-cyan-500/20 backdrop-blur-sm shadow-2xl overflow-hidden cursor-grab active:cursor-grabbing p-2">
+            <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 text-[10px] font-mono text-cyan-400 bg-slate-950/80 px-2.5 py-1.5 rounded-lg border border-cyan-500/30 backdrop-blur-md pointer-events-none">
+              <span className="w-2 h-2 rounded-full bg-lime-400 animate-ping" />
+              <span>360° INTERATTIVO</span>
+            </div>
+            <div className="absolute bottom-4 inset-x-0 z-10 flex justify-center pointer-events-none">
+               <div className="bg-slate-950/80 backdrop-blur-md px-4 py-2 rounded-full border border-slate-800 text-[10px] text-slate-300 flex items-center gap-3 font-semibold uppercase">
+                 <span>👆 Ruota</span>
+                 <span className="w-1 h-1 rounded-full bg-slate-700" />
+                 <span>🔍 Zoom</span>
+               </div>
+            </div>
+            <AbyssModelViewer />
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FeaturesSection() {
+  return (
+    <section id="features" className="py-20 bg-[#020810] border-t border-slate-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <h2 className="text-3xl font-black text-white mb-4">Progettata per l'Eccellenza</h2>
+          <p className="text-slate-400 text-sm leading-relaxed">Il connubio perfetto tra dimensioni generose e idrodinamica avanzata. ABYSS 350 è pensata per offrire sicurezza assoluta a principianti e famiglie.</p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/30 transition-colors">
+            <Waves className="w-10 h-10 text-cyan-400 mb-4" />
+            <h3 className="text-xl font-bold text-white mb-2">Larghezza Extra 89cm</h3>
+            <p className="text-sm text-slate-400">Una stabilità senza precedenti in acqua. Alzati in piedi al primo tentativo senza timore di ribaltarti.</p>
+          </div>
+          <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-lime-400/30 transition-colors">
+            <Layers className="w-10 h-10 text-lime-400 mb-4" />
+            <h3 className="text-xl font-bold text-white mb-2">PVC Militare Doppio Strato</h3>
+            <p className="text-sm text-slate-400">Resistenza estrema a urti e abrasioni. Gonfiata a 15 PSI diventa rigida come una tavola in vetroresina.</p>
+          </div>
+          <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-emerald-400/30 transition-colors">
+            <Anchor className="w-10 h-10 text-emerald-400 mb-4" />
+            <h3 className="text-xl font-bold text-white mb-2">Conversione Kayak</h3>
+            <p className="text-sm text-slate-400">I 4 anelli D-Ring integrati permettono di agganciare rapidamente un seggiolino (incluso nel kit).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function IncludedKitSection() {
+  const kitItems = [
+    { name: "Pagaia Doppia in Alluminio", desc: "Regolabile e scomponibile. Trasformabile da SUP a Kayak.", icon: <Waves className="w-6 h-6 text-cyan-400" /> },
+    { name: "Sedile Kayak Premium", desc: "Schienale imbottito in EVA con 4 moschettoni per aggancio rapido.", icon: <Package className="w-6 h-6 text-lime-400" /> },
+    { name: "Pompa Alta Pressione", desc: "Gonfiaggio Double-Action con manometro integrato (fino a 15 PSI).", icon: <Gauge className="w-6 h-6 text-emerald-400" /> },
+    { name: "Zaino da Trasporto XL", desc: "Spallacci imbottiti, capiente per contenere la tavola e gli accessori.", icon: <Briefcase className="w-6 h-6 text-cyan-400" /> },
+    { name: "Leash di Sicurezza", desc: "Cavo a spirale in TPU con cavigliera in morbido neoprene.", icon: <LinkIcon className="w-6 h-6 text-lime-400" /> },
+    { name: "Kit Riparazione", desc: "Chiave per serraggio valvola e toppe in PVC rinforzato.", icon: <Wrench className="w-6 h-6 text-emerald-400" /> },
+  ];
+
+  return (
+    <section id="pack" className="py-20 bg-[#031122] border-t border-slate-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-lime-950/50 border border-lime-500/30 text-lime-400 text-xs font-mono font-bold tracking-widest mb-4">
+            PACK COMPLETO "READY TO GO"
+          </span>
+          <h2 className="text-3xl font-black text-white mb-4">Tutto Ciò che ti Serve, Incluso.</h2>
+          <p className="text-slate-400 text-sm leading-relaxed">
+            Nessuna sorpresa. La scatola del tuo ABYSS 350 include un kit completo di accessori premium di livello professionale, per farti scendere in acqua il giorno stesso.
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+          {kitItems.map((item, index) => (
+            <div key={index} className="flex flex-col p-6 rounded-2xl bg-slate-950 border border-slate-800 shadow-xl group hover:border-cyan-500/30 transition-all">
+              <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center border border-slate-800 group-hover:bg-slate-800 mb-4 transition-colors">
+                {item.icon}
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2">{item.name}</h3>
+              <p className="text-sm text-slate-400">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ContactSection() {
+  return (
+    <section id="contatti" className="py-20 bg-[#01060c] border-t border-slate-900">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <span className="text-xs font-mono font-bold tracking-widest text-lime-400 uppercase">Supporto Diretto</span>
+          <h2 className="text-3xl font-black text-white mt-2">Contatti & Assistenza</h2>
+          <p className="text-slate-400 text-sm mt-3">Hai domande sul prodotto? Scegli il canale che preferisci, siamo a tua disposizione.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <a href="#" className="p-8 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-lime-500/50 transition-all text-center group">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-400 group-hover:scale-110 transition-transform mb-5">
+              <Phone className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">WhatsApp</h3>
+            <span className="inline-block w-full py-2.5 rounded-xl bg-slate-950 text-lime-400 text-xs font-bold border border-slate-800 group-hover:border-lime-500/30 transition-colors font-mono">
+              +39 340 000 0000
+            </span>
+          </a>
+
+          <a href="#" className="p-8 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/50 transition-all text-center group">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform mb-5">
+              <Mail className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">E-Mail</h3>
+            <span className="inline-block w-full py-2.5 rounded-xl bg-slate-950 text-cyan-400 text-xs font-bold border border-slate-800 group-hover:border-cyan-500/30 transition-colors font-mono">
+              info@abyss-sup.it
+            </span>
+          </a>
+
+          <a href="#" className="p-8 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/50 transition-all text-center group">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform mb-5">
+              <Globe className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Instagram</h3>
+            <span className="inline-block w-full py-2.5 rounded-xl bg-slate-950 text-emerald-400 text-xs font-bold border border-slate-800 group-hover:border-emerald-500/30 transition-colors font-mono">
+              @abyss.sup
+            </span>
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CheckoutModal({ isOpen, onClose }) {
+  const [step, setStep] = useState('shipping'); // 'shipping' | 'payment' | 'processing' | 'success'
+  const [formData, setFormData] = useState({
+    fullName: '', email: '', phone: '', address: '', city: '', cap: '',
+    cardNumber: '', expiry: '', cvc: '', paymentMethod: 'card'
+  });
+  const [errors, setErrors] = useState({});
+
+  if (!isOpen) return null;
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (errors[e.target.name]) setErrors({ ...errors, [e.target.name]: '' });
+  };
+
+  const validateShipping = () => {
+    const errs = {};
+    if (!formData.fullName.trim()) errs.fullName = 'Obbligatorio';
+    if (!formData.email.includes('@')) errs.email = 'Email non valida';
+    if (!formData.phone.trim()) errs.phone = 'Obbligatorio';
+    if (!formData.address.trim()) errs.address = 'Obbligatorio';
+    if (!formData.city.trim()) errs.city = 'Obbligatorio';
+    if (!formData.cap.trim()) errs.cap = 'Obbligatorio';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const validatePayment = () => {
+    if (formData.paymentMethod === 'paypal') return true;
+    const errs = {};
+    if (!formData.cardNumber.trim()) errs.cardNumber = 'Inserire numero carta';
+    if (!formData.expiry.trim()) errs.expiry = 'Inserire scadenza';
+    if (!formData.cvc.trim()) errs.cvc = 'Inserire CVC';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const proceedToPayment = (e) => {
+    e.preventDefault();
+    if (validateShipping()) setStep('payment');
+  };
+
+  const handleSubmitFinal = (e) => {
+    e.preventDefault();
+    if (formData.paymentMethod === 'card' && !validatePayment()) return;
+    
+    setStep('processing');
+    setTimeout(() => setStep('success'), 2500);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+      <div className="relative w-full max-w-xl rounded-3xl bg-slate-900 border border-cyan-500/40 shadow-2xl p-6 sm:p-8 text-left my-8">
+        
+        <button onClick={onClose} className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-white bg-slate-800/60 transition-colors">
+          <X className="w-5 h-5" />
+        </button>
+
+        {/* STEP 1: SPEDIZIONE */}
+        {step === 'shipping' && (
+          <form onSubmit={proceedToPayment} className="space-y-5 animate-in fade-in slide-in-from-bottom-4">
+            <div>
+              <span className="text-xs font-mono font-bold text-lime-400 uppercase">Checkout Sicuro 1/2</span>
+              <h3 className="text-2xl font-black text-white mt-1">Dati Spedizione</h3>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex justify-between items-center text-sm">
+              <div>
+                <span className="text-slate-200 font-bold block">1x Kit ABYSS 350 Completo</span>
+                <span className="text-emerald-400 text-xs font-mono">Spedizione Express Inclusa</span>
+              </div>
+              <span className="text-xl font-black text-white">€{PRODUCT_PRICE.toFixed(2).replace('.', ',')}</span>
+            </div>
+
+            <div className="space-y-4 pt-2">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Nome e Cognome</label>
+                <input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-cyan-400 outline-none transition-colors" />
+                {errors.fullName && <p className="text-[11px] text-red-400 mt-1">{errors.fullName}</p>}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Email per Ricevuta</label>
+                  <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-cyan-400 outline-none transition-colors" />
+                  {errors.email && <p className="text-[11px] text-red-400 mt-1">{errors.email}</p>}
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Telefono (Corriere)</label>
+                  <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-cyan-400 outline-none transition-colors" />
+                  {errors.phone && <p className="text-[11px] text-red-400 mt-1">{errors.phone}</p>}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Indirizzo e Civico</label>
+                <input type="text" name="address" value={formData.address} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-cyan-400 outline-none transition-colors" />
+                {errors.address && <p className="text-[11px] text-red-400 mt-1">{errors.address}</p>}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Città</label>
+                  <input type="text" name="city" value={formData.city} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-cyan-400 outline-none transition-colors" />
+                  {errors.city && <p className="text-[11px] text-red-400 mt-1">{errors.city}</p>}
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">CAP</label>
+                  <input type="text" name="cap" value={formData.cap} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-cyan-400 outline-none transition-colors" />
+                  {errors.cap && <p className="text-[11px] text-red-400 mt-1">{errors.cap}</p>}
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-base uppercase tracking-wider shadow-xl transition-colors mt-6">
+              Vai al Pagamento <ArrowRight className="w-5 h-5" />
+            </button>
+          </form>
+        )}
+
+        {/* STEP 2: PAGAMENTO */}
+        {step === 'payment' && (
+          <form onSubmit={handleSubmitFinal} className="space-y-5 animate-in fade-in slide-in-from-right-4">
+            <div>
+              <span className="text-xs font-mono font-bold text-emerald-400 uppercase">Checkout Sicuro 2/2</span>
+              <h3 className="text-2xl font-black text-white mt-1">Metodo di Pagamento</h3>
+            </div>
+
+            <div className="flex gap-4">
+              <label className={`flex-1 flex flex-col items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-colors ${formData.paymentMethod === 'card' ? 'border-cyan-500 bg-cyan-500/10' : 'border-slate-800 bg-slate-950 hover:bg-slate-900'}`}>
+                <input type="radio" name="paymentMethod" value="card" checked={formData.paymentMethod === 'card'} onChange={handleInputChange} className="hidden" />
+                <CreditCard className={`w-8 h-8 mb-2 ${formData.paymentMethod === 'card' ? 'text-cyan-400' : 'text-slate-500'}`} />
+                <span className={`text-sm font-bold ${formData.paymentMethod === 'card' ? 'text-cyan-400' : 'text-slate-400'}`}>Carta</span>
+              </label>
+              
+              <label className={`flex-1 flex flex-col items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-colors ${formData.paymentMethod === 'paypal' ? 'border-blue-500 bg-blue-500/10' : 'border-slate-800 bg-slate-950 hover:bg-slate-900'}`}>
+                <input type="radio" name="paymentMethod" value="paypal" checked={formData.paymentMethod === 'paypal'} onChange={handleInputChange} className="hidden" />
+                {/* Simulated PayPal Icon */}
+                <div className={`text-2xl font-black italic mb-1 ${formData.paymentMethod === 'paypal' ? 'text-blue-400' : 'text-slate-500'}`}>
+                  Pay<span className={formData.paymentMethod === 'paypal' ? 'text-blue-300' : 'text-slate-600'}>Pal</span>
+                </div>
+                <span className={`text-sm font-bold ${formData.paymentMethod === 'paypal' ? 'text-blue-400' : 'text-slate-400'}`}>PayPal</span>
+              </label>
+            </div>
+
+            {formData.paymentMethod === 'card' && (
+              <div className="space-y-4 p-5 rounded-2xl bg-slate-950 border border-slate-800">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-semibold text-slate-300">Dati della Carta</span>
+                  <Lock className="w-4 h-4 text-emerald-400" />
+                </div>
+                <div>
+                  <input type="text" name="cardNumber" value={formData.cardNumber} onChange={handleInputChange} placeholder="Numero Carta (0000 0000 0000 0000)" className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:border-cyan-400 outline-none" />
+                  {errors.cardNumber && <p className="text-[11px] text-red-400 mt-1">{errors.cardNumber}</p>}
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <input type="text" name="expiry" value={formData.expiry} onChange={handleInputChange} placeholder="Scadenza (MM/AA)" className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:border-cyan-400 outline-none" />
+                    {errors.expiry && <p className="text-[11px] text-red-400 mt-1">{errors.expiry}</p>}
+                  </div>
+                  <div>
+                    <input type="text" name="cvc" value={formData.cvc} onChange={handleInputChange} placeholder="CVC (123)" className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:border-cyan-400 outline-none" />
+                    {errors.cvc && <p className="text-[11px] text-red-400 mt-1">{errors.cvc}</p>}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {formData.paymentMethod === 'paypal' && (
+              <div className="p-5 rounded-2xl bg-blue-950/20 border border-blue-900/50 text-center">
+                <p className="text-sm text-slate-300">Sarai reindirizzato in sicurezza sui server PayPal per completare la transazione.</p>
+              </div>
+            )}
+
+            <div className="flex gap-3 mt-6">
+              <button type="button" onClick={() => setStep('shipping')} className="px-5 py-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold transition-colors">
+                Indietro
+              </button>
+              <button type="submit" className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-gradient-to-r from-lime-500 to-emerald-500 text-slate-950 font-black text-base uppercase tracking-wider shadow-xl transition-transform hover:scale-105">
+                <Lock className="w-4 h-4" /> Paga €{PRODUCT_PRICE.toFixed(2).replace('.', ',')}
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* STEP 3: ELABORAZIONE */}
+        {step === 'processing' && (
+          <div className="py-20 text-center flex flex-col items-center animate-in zoom-in-95">
+            <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mb-6" />
+            <h4 className="text-xl font-bold text-white mb-2">Elaborazione in corso...</h4>
+            <p className="text-sm text-slate-400">Connessione sicura al gateway di pagamento</p>
+          </div>
+        )}
+
+        {/* STEP 4: SUCCESSO */}
+        {step === 'success' && (
+          <div className="py-16 text-center animate-in zoom-in-95 duration-500">
+            <div className="w-20 h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-500 text-emerald-400 flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+              <Check className="w-10 h-10" />
+            </div>
+            <h4 className="text-2xl font-black text-white mb-2">Ordine Confermato!</h4>
+            <p className="text-sm text-slate-300 max-w-sm mx-auto mb-6">
+              Grazie <strong>{formData.fullName}</strong>. Ti abbiamo inviato una mail di riepilogo a <strong>{formData.email}</strong>.
+            </p>
+            <button onClick={onClose} className="px-8 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold transition-colors">
+              Torna al Sito
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-slate-950 scroll-smooth">
+      <Header onOrderClick={() => setIsCheckoutOpen(true)} />
+      <TrustBar />
+      <HeroSection onOrderClick={() => setIsCheckoutOpen(true)} />
+      <FeaturesSection />
+      
+      {/* SEZIONE PACK RIPRISTINATA */}
+      <IncludedKitSection />
+      
+      <ContactSection />
+      
+      <footer className="bg-[#010408] border-t border-slate-900 py-10 text-center">
+        <p className="text-xs text-slate-500 max-w-md mx-auto">
+          © {new Date().getFullYear()} ABYSS Nautica Sports. Tutti i diritti riservati. <br/>
+          Prezzo fisso di vendita al pubblico: €249,90 IVA inclusa.
+        </p>
+      </footer>
+
+      {/* MODAL CHECKOUT MIGLIORATO CON PAGAMENTO */}
+      <CheckoutModal 
+        isOpen={isCheckoutOpen} 
+        onClose={() => setIsCheckoutOpen(false)} 
+      />
+    </div>
+  );
+}
