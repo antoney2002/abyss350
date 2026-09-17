@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABYSS 350 - Family SUP Extra-Large</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Model Viewer -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #020617; /* slate-950 */
+            color: #f1f5f9; 
+        }
+
+        /* Nasconde la barra di progresso di default di model-viewer */
+        model-viewer::part(default-progress-bar) { 
+            display: none; 
+        }
+
+        /* Animazione di galleggiamento per il contenitore 3D */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float { 
+            animation: float 6s ease-in-out infinite; 
+        }
+
+        /* Effetto vetro per i pannelli */
+        .glass-panel { 
+            background: rgba(15, 23, 42, 0.7); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(6, 182, 212, 0.2); 
+        }
+
+        /* Nasconde la scrollbar del body quando la modale è aperta */
+        .no-scroll { overflow: hidden; }
+    </style>
+</head>
+<body class="selection:bg-cyan-500 selection:text-slate-950 flex flex-col min-h-screen">
+
+    <header class="sticky top-0 z-50 w-full backdrop-blur-xl bg-slate-950/90 border-b border-cyan-900/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-3 group shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-lime-400 flex items-center justify-center p-0.5 shadow-lg group-hover:scale-105 transition-transform">
+                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                        <i data-lucide="anchor" class="w-5 h-5 text-cyan-400 group-hover:rotate-12 transition-transform"></i>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-xl font-black tracking-tight text-white flex items-center gap-1.5">
+                        ABYSS <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-lime-400 font-mono">350</span>
+                    </span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-300">
+                <a href="#hero" class="hover:text-cyan-400 transition-colors">Modello 3D</a>
+                <a href="#features" class="hover:text-cyan-400 transition-colors">Caratteristiche</a>
+                <a href="#pack" class="hover:text-cyan-400 transition-colors">Cosa è incluso</a>
+                <a href="#contatti" class="hover:text-cyan-400 transition-colors">Contatti</a>
+            </nav>
+
+            <!-- CTA Button -->
+            <div class="hidden md:flex items-center pl-6 border-l border-slate-800">
+                <button class="open-checkout flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-lime-500 to-emerald-500 hover:from-lime-400 hover:to-emerald-400 text-slate-950 font-black text-xs uppercase shadow-lg transition-transform hover:scale-105">
+                    <span>Ordina Ora</span>
+                    <span class="border-l border-slate-900/30 pl-2">€249,90</span>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="md:hidden p-2 text-slate-300 hover:text-white">
+                <i id="menu-icon" data-lucide="menu" class="w-6 h-6"></i>
+                <i id="close-icon" data-lucide="x" class="w-6 h-6 hidden"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden px-4 py-4 bg-slate-950 border-b border-slate-800 space-y-3">
+            <a href="#hero" class="mobile-link block text-slate-300 hover:text-cyan-400 text-sm font-semibold">Modello 3D</a>
+            <a href="#features" class="mobile-link block text-slate-300 hover:text-cyan-400 text-sm font-semibold">Caratteristiche</a>
+            <a href="#pack" class="mobile-link block text-slate-300 hover:text-cyan-400 text-sm font-semibold">Cosa è incluso</a>
+            <a href="#contatti" class="mobile-link block text-slate-300 hover:text-cyan-400 text-sm font-semibold">Contatti</a>
+            <button class="open-checkout w-full py-3 rounded-xl bg-gradient-to-r from-lime-400 to-emerald-400 text-slate-950 font-black text-sm uppercase shadow-lg mt-2">
+                Ordina Ora • €249,90
+            </button>
+        </div>
+    </header>
+
+    <div class="bg-slate-900 border-b border-slate-800 py-3">
+        <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-center gap-4 md:gap-8 text-[10px] sm:text-[11px] font-semibold text-slate-300 uppercase tracking-wider">
+            <span class="flex items-center gap-1.5"><i data-lucide="truck" class="w-3.5 h-3.5 text-cyan-400"></i> Spedizione Express</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-lime-400"></i> Garanzia 24 Mesi</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-cyan-400"></i> Reso 30 Giorni</span>
+        </div>
+    </div>
+
+    <section id="hero" class="relative w-full pt-10 pb-20 lg:pt-16 lg:pb-24 overflow-hidden bg-gradient-to-b from-slate-950 via-[#031122] to-slate-950">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <!-- Text Content -->
+                <div class="text-center lg:text-left order-2 lg:order-1">
+                    <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-bold tracking-widest mb-6">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i> EDIZIONE 2026
+                    </span>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6 tracking-tight">
+                        L'Oceano Ti Chiama. <br />
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-lime-400">
+                            Rispondi con ABYSS.
+                        </span>
+                    </h1>
+                    <p class="text-slate-300 text-base lg:text-lg mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                        Il SUP gonfiabile extra-wide (350×89×15 cm) progettato per la stabilità assoluta. Perfetto per esplorazioni in famiglia o conversioni in kayak in pochi secondi.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+                        <button class="open-checkout w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-lime-500 to-emerald-500 hover:from-lime-400 hover:to-emerald-400 text-slate-950 font-black text-lg uppercase tracking-wide shadow-xl shadow-lime-500/20 transition-transform hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
+                            Acquista Subito
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3D Viewer Container -->
+                <div class="order-1 lg:order-2 relative w-full aspect-[4/5] md:aspect-auto md:h-[550px] glass-panel rounded-3xl overflow-hidden p-2 animate-float">
+                    
+                    <!-- Glow Backdrop -->
+                    <div class="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-lime-500/10 rounded-3xl pointer-events-none blur-xl"></div>
+
+                    <!-- Interactive Badges -->
+                    <div class="absolute top-4 right-4 z-10 flex items-center gap-1.5 text-[10px] font-mono text-cyan-400 bg-slate-950/80 px-2.5 py-1.5 rounded-lg border border-cyan-500/30 backdrop-blur-md pointer-events-none">
+                        <span class="w-2 h-2 rounded-full bg-lime-400 animate-ping"></span>
+                        <span>360° INTERATTIVO</span>
+                    </div>
+                    
+                    <div class="absolute bottom-4 inset-x-0 z-10 flex justify-center pointer-events-none">
+                        <div class="bg-slate-950/80 backdrop-blur-md px-4 py-2 rounded-full border border-slate-800 text-[10px] text-slate-300 flex items-center gap-3 font-semibold uppercase">
+                            <span>👆 Ruota</span>
+                            <span class="w-1 h-1 rounded-full bg-slate-700"></span>
+                            <span>🔍 Zoom</span>
+                        </div>
+                    </div>
+
+                    <!-- Custom Loader -->
+                    <div id="model-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 z-50 transition-opacity duration-500">
+                        <div class="w-14 h-14 border-4 border-cyan-900 border-t-cyan-400 rounded-full animate-spin mb-4"></div>
+                        <span class="text-cyan-400 font-mono text-sm font-bold bg-slate-950/60 px-4 py-1.5 rounded-full border border-cyan-900">
+                            <span id="load-progress">0</span>%
+                        </span>
+                        <span class="text-slate-400 text-[10px] mt-3 uppercase tracking-widest">Caricamento Texture PBR...</span>
+                    </div>
+
+                    <!-- The 3D Model -->
+                    <model-viewer
+                        id="abyss-viewer"
+                        src="https://raw.githubusercontent.com/antoney2002/abyss350/main/untitled.glb"
+                        poster="https://placehold.co/800x800/020617/06b6d4?text=Avvio+3D..."
+                        camera-controls
+                        auto-rotate
+                        rotation-per-second="5deg"
+                        shadow-intensity="1.5"
+                        shadow-softness="1"
+                        camera-orbit="-45deg 75deg 105%"
+                        min-camera-orbit="auto 0deg 70%"
+                        max-camera-orbit="auto 90deg 150%"
+                        style="width: 100%; height: 100%; background-color: transparent; outline: none; cursor: grab;"
+                        alt="Modello 3D interattivo ABYSS 350">
+                    </model-viewer>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-20 bg-[#020810] border-t border-slate-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl font-black text-white mb-4">Progettata per l'Eccellenza</h2>
+                <p class="text-slate-400 text-sm leading-relaxed">Il connubio perfetto tra dimensioni generose e idrodinamica avanzata. ABYSS 350 è pensata per offrire sicurezza assoluta a principianti e famiglie.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/30 transition-colors">
+                    <i data-lucide="waves" class="w-10 h-10 text-cyan-400 mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">Larghezza Extra 89cm</h3>
+                    <p class="text-sm text-slate-400">Una stabilità senza precedenti in acqua. Alzati in piedi al primo tentativo senza timore di ribaltarti.</p>
+                </div>
+                <div class="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-lime-400/30 transition-colors">
+                    <i data-lucide="layers" class="w-10 h-10 text-lime-400 mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">PVC Militare Doppio Strato</h3>
+                    <p class="text-sm text-slate-400">Resistenza estrema a urti e abrasioni. Gonfiata a 15 PSI diventa rigida come una tavola in vetroresina.</p>
+                </div>
+                <div class="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-emerald-400/30 transition-colors">
+                    <i data-lucide="anchor" class="w-10 h-10 text-emerald-400 mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">Conversione Kayak</h3>
+                    <p class="text-sm text-slate-400">I 4 anelli D-Ring integrati permettono di agganciare rapidamente un seggiolino (incluso nel kit).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pack" class="py-20 bg-[#031122] border-t border-slate-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-lime-950/50 border border-lime-500/30 text-lime-400 text-xs font-mono font-bold tracking-widest mb-4">
+                    PACK COMPLETO "READY TO GO"
+                </span>
+                <h2 class="text-3xl font-black text-white mb-4">Tutto Ciò che ti Serve, Incluso.</h2>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Nessuna sorpresa. La scatola del tuo ABYSS 350 include un kit completo di accessori premium di livello professionale, per farti scendere in acqua il giorno stesso.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+                <!-- Card 1 -->
+                <div class="flex flex-col p-6 rounded-2xl bg-slate-950 border border-slate-800 shadow-xl group hover:border-cyan-500/30 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center border border-slate-800 group-hover:bg-slate-800 mb-4 transition-colors">
+                        <i data-lucide="waves" class="w-6 h-6 text-cyan-400"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Pagaia Doppia in Alluminio</h3>
+                    <p class="text-sm text-slate-400">Regolabile e scomponibile. Trasformabile rapidamente da pagaia singola da SUP a doppia pala da Kayak.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="flex flex-col p-6 rounded-2xl bg-slate-950 border border-slate-800 shadow-xl group hover:border-lime-500/30 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center border border-slate-800 group-hover:bg-slate-800 mb-4 transition-colors">
+                        <i data-lucide="package" class="w-6 h-6 text-lime-400"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Sedile Kayak Premium</h3>
+                    <p class="text-sm text-slate-400">Schienale ergonomico imbottito in morbido EVA. Si aggancia saldamente ai 4 D-Ring tramite moschettoni inox.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="flex flex-col p-6 rounded-2xl bg-slate-950 border border-slate-800 shadow-xl group hover:border-emerald-500/30 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center border border-slate-800 group-hover:bg-slate-800 mb-4 transition-colors">
+                        <i data-lucide="gauge" class="w-6 h-6 text-emerald-400"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Pompa Alta Pressione</h3>
+                    <p class="text-sm text-slate-400">Gonfiaggio Double-Action che immette aria sia in spinta che in trazione. Manometro integrato per i 15 PSI.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="flex flex-col p-6 rounded-2xl bg-slate-950 border border-slate-800 shadow-xl group hover:border-cyan-500/30 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center border border-slate-800 group-hover:bg-slate-800 mb-4 transition-colors">
+                        <i data-lucide="briefcase" class="w-6 h-6 text-cyan-400"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Zaino da Trasporto XL</h3>
+                    <p class="text-sm text-slate-400">Tessuto tecnico antistrappo. Spallacci larghi imbottiti. Estremamente capiente per contenere tavola e accessori.</p>
+                </div>
+                <!-- Card 5 -->
+                <div class="flex flex-col p-6 rounded-2xl bg-slate-950 border border-slate-800 shadow-xl group hover:border-lime-500/30 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center border border-slate-800 group-hover:bg-slate-800 mb-4 transition-colors">
+                        <i data-lucide="link" class="w-6 h-6 text-lime-400"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Leash di Sicurezza</h3>
+                    <p class="text-sm text-slate-400">Cavo a spirale in TPU ad altissima resistenza. Non intralcia nei movimenti e presenta una cavigliera in neoprene.</p>
+                </div>
+                <!-- Card 6 -->
+                <div class="flex flex-col p-6 rounded-2xl bg-slate-950 border border-slate-800 shadow-xl group hover:border-emerald-500/30 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center border border-slate-800 group-hover:bg-slate-800 mb-4 transition-colors">
+                        <i data-lucide="wrench" class="w-6 h-6 text-emerald-400"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Kit Riparazione Emergenza</h3>
+                    <p class="text-sm text-slate-400">Include chiave specifica per il serraggio della valvola e toppe in PVC rinforzato dello stesso colore della tavola.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contatti" class="py-20 bg-[#01060c] border-t border-slate-900">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-xs font-mono font-bold tracking-widest text-lime-400 uppercase">Supporto Diretto</span>
+                <h2 class="text-3xl font-black text-white mt-2">Contatti & Assistenza</h2>
+                <p class="text-slate-400 text-sm mt-3">Hai domande sul prodotto? Scegli il canale che preferisci, il nostro team risponde dall'Italia in tempi brevissimi.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Inserire Link WhatsApp reale in href="#" -->
+                <a href="#" target="_blank" class="p-8 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-lime-500/50 transition-all text-center group">
+                    <div class="w-14 h-14 mx-auto rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-400 group-hover:scale-110 transition-transform mb-5">
+                        <i data-lucide="phone" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">WhatsApp</h3>
+                    <span class="inline-block w-full py-2.5 rounded-xl bg-slate-950 text-lime-400 text-xs font-bold border border-slate-800 group-hover:border-lime-500/30 transition-colors font-mono">
+                        +39 340 000 0000
+                    </span>
+                </a>
+
+                <!-- Inserire Link Mail reale in href="#" -->
+                <a href="#" target="_blank" class="p-8 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/50 transition-all text-center group">
+                    <div class="w-14 h-14 mx-auto rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform mb-5">
+                        <i data-lucide="mail" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">E-Mail</h3>
+                    <span class="inline-block w-full py-2.5 rounded-xl bg-slate-950 text-cyan-400 text-xs font-bold border border-slate-800 group-hover:border-cyan-500/30 transition-colors font-mono">
+                        info@abyss-sup.it
+                    </span>
+                </a>
+
+                <!-- Inserire Link Instagram reale in href="#" -->
+                <a href="#" target="_blank" class="p-8 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/50 transition-all text-center group">
+                    <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform mb-5">
+                        <i data-lucide="globe" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Instagram</h3>
+                    <span class="inline-block w-full py-2.5 rounded-xl bg-slate-950 text-emerald-400 text-xs font-bold border border-slate-800 group-hover:border-emerald-500/30 transition-colors font-mono">
+                        @abyss.sup
+                    </span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-[#010408] border-t border-slate-900 py-10 mt-auto text-center">
+        <p class="text-xs text-slate-500 max-w-md mx-auto px-4">
+            © <script>document.write(new Date().getFullYear())</script> ABYSS Nautica Sports. Tutti i diritti riservati.<br/>
+            Prezzo fisso di vendita al pubblico: €249,90 IVA inclusa.
+        </p>
+    </footer>
+
+    <div id="checkout-modal" class="fixed inset-0 z-50 hidden">
+        
+        <!-- Backdrop Blur -->
+        <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-md"></div>
+        
+        <!-- Modal Container (Scrollable) -->
+        <div class="absolute inset-0 flex items-center justify-center p-4 overflow-y-auto">
+            <div class="relative w-full max-w-xl rounded-3xl bg-slate-900 border border-cyan-500/40 shadow-2xl p-6 sm:p-8 text-left my-8">
+                
+                <button id="close-modal" class="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-white bg-slate-800/60 transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+
+                <!-- Step 1: Dati Spedizione -->
+                <div id="step-shipping" class="space-y-5">
+                    <div>
+                        <span class="text-xs font-mono font-bold text-lime-400 uppercase">Checkout Sicuro 1/2</span>
+                        <h3 class="text-2xl font-black text-white mt-1">Dati Spedizione</h3>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex justify-between items-center text-sm">
+                        <div>
+                            <span class="text-slate-200 font-bold block">1x Kit ABYSS 350 Completo</span>
+                            <span class="text-emerald-400 text-[11px] font-mono">Spedizione Express Inclusa</span>
+                        </div>
+                        <span class="text-xl font-black text-white">€249,90</span>
+                    </div>
+
+                    <form id="shipping-form" class="space-y-4 pt-2">
+                        <div>
+                            <label for="fullName" class="block text-xs font-semibold text-slate-300 mb-1.5 cursor-pointer">Nome e Cognome *</label>
+                            <input type="text" id="fullName" required class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-cyan-400 outline-none transition-colors">
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="email" class="block text-xs font-semibold text-slate-300 mb-1.5 cursor-pointer">Email per Ricevuta *</label>
+                                <input type="email" id="email" required class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-cyan-400 outline-none transition-colors">
+                            </div>
+                            <div>
+                                <label for="phone" class="block text-xs font-semibold text-slate-300 mb-1.5 cursor-pointer">Telefono Corriere *</label>
+                                <input type="tel" id="phone" required class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-cyan-400 outline-none transition-colors">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="address" class="block text-xs font-semibold text-slate-300 mb-1.5 cursor-pointer">Indirizzo e Civico *</label>
+                            <input type="text" id="address" required class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-cyan-400 outline-none transition-colors">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="city" class="block text-xs font-semibold text-slate-300 mb-1.5 cursor-pointer">Città *</label>
+                                <input type="text" id="city" required class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-cyan-400 outline-none transition-colors">
+                            </div>
+                            <div>
+                                <label for="cap" class="block text-xs font-semibold text-slate-300 mb-1.5 cursor-pointer">CAP *</label>
+                                <input type="text" id="cap" required class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-cyan-400 outline-none transition-colors">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-base uppercase tracking-wider shadow-xl transition-colors mt-6">
+                            Vai al Pagamento <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Step 2: Metodo Pagamento -->
+                <div id="step-payment" class="space-y-5 hidden">
+                    <div>
+                        <span class="text-xs font-mono font-bold text-emerald-400 uppercase">Checkout Sicuro 2/2</span>
+                        <h3 class="text-2xl font-black text-white mt-1">Metodo di Pagamento</h3>
+                    </div>
+
+                    <form id="payment-form" class="space-y-5">
+                        
+                        <!-- Toggle Metodo -->
+                        <div class="flex gap-4">
+                            <label id="label-card" class="flex-1 flex flex-col items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-colors border-cyan-500 bg-cyan-500/10">
+                                <input type="radio" name="paymentMethod" id="radio-card" value="card" checked class="hidden">
+                                <i data-lucide="credit-card" id="icon-card" class="w-8 h-8 mb-2 text-cyan-400"></i>
+                                <span id="text-card" class="text-sm font-bold text-cyan-400">Carta</span>
+                            </label>
+                            
+                            <label id="label-paypal" class="flex-1 flex flex-col items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-colors border-slate-800 bg-slate-950 hover:bg-slate-900">
+                                <input type="radio" name="paymentMethod" id="radio-paypal" value="paypal" class="hidden">
+                                <div id="icon-paypal" class="text-2xl font-black italic mb-1 text-slate-500">
+                                    Pay<span class="text-slate-600">Pal</span>
+                                </div>
+                                <span id="text-paypal" class="text-sm font-bold text-slate-400">PayPal</span>
+                            </label>
+                        </div>
+
+                        <!-- Campi Carta -->
+                        <div id="card-fields" class="space-y-4 p-5 rounded-2xl bg-slate-950 border border-slate-800">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-semibold text-slate-300">Dati della Carta</span>
+                                <i data-lucide="lock" class="w-4 h-4 text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <input type="text" id="cardNumber" placeholder="Numero Carta (0000 0000 0000 0000)" required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:border-cyan-400 outline-none">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <input type="text" id="expiry" placeholder="Scadenza (MM/AA)" required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:border-cyan-400 outline-none">
+                                </div>
+                                <div>
+                                    <input type="text" id="cvc" placeholder="CVC (123)" required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:border-cyan-400 outline-none">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Testo PayPal -->
+                        <div id="paypal-fields" class="hidden p-5 rounded-2xl bg-blue-950/20 border border-blue-900/50 text-center">
+                            <p class="text-sm text-slate-300">Sarai reindirizzato in sicurezza sui server PayPal per completare la transazione.</p>
+                        </div>
+
+                        <div class="flex gap-3 mt-6">
+                            <button type="button" id="btn-back-shipping" class="px-5 py-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold transition-colors">
+                                Indietro
+                            </button>
+                            <button type="submit" class="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-gradient-to-r from-lime-500 to-emerald-500 text-slate-950 font-black text-base uppercase tracking-wider shadow-xl transition-transform hover:scale-105">
+                                <i data-lucide="lock" class="w-4 h-4"></i> Paga €249,90
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Step 3: Elaborazione -->
+                <div id="step-processing" class="hidden py-20 text-center flex flex-col items-center">
+                    <div class="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mb-6"></div>
+                    <h4 class="text-xl font-bold text-white mb-2">Elaborazione in corso...</h4>
+                    <p class="text-sm text-slate-400">Connessione sicura al gateway di pagamento</p>
+                </div>
+
+                <!-- Step 4: Successo -->
+                <div id="step-success" class="hidden py-16 text-center">
+                    <div class="w-20 h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-500 text-emerald-400 flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+                        <i data-lucide="check" class="w-10 h-10"></i>
+                    </div>
+                    <h4 class="text-2xl font-black text-white mb-2">Ordine Confermato!</h4>
+                    <p class="text-sm text-slate-300 max-w-sm mx-auto mb-6">
+                        Transazione eseguita con successo. Ti abbiamo inviato una mail di riepilogo per tracciare la tua spedizione.
+                    </p>
+                    <button id="btn-close-success" class="px-8 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold transition-colors">
+                        Torna al Sito
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Inizializzazione Icone
+        lucide.createIcons();
+
+        // 2. Logica Mobile Menu
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            menuIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                menuIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+            });
+        });
+
+        // 3. Logica Loader Modello 3D
+        const viewer = document.getElementById('abyss-viewer');
+        const loader = document.getElementById('model-loader');
+        const progressText = document.getElementById('load-progress');
+        let is3DLoaded = false;
+
+        const hideLoader = () => {
+            if(is3DLoaded) return;
+            is3DLoaded = true;
+            loader.style.opacity = '0';
+            setTimeout(() => loader.classList.add('hidden'), 500);
+        };
+
+        viewer.addEventListener('progress', (e) => {
+            const p = Math.round(e.detail.totalProgress * 100);
+            progressText.innerText = p;
+            if (p >= 100) setTimeout(hideLoader, 300);
+        });
+
+        viewer.addEventListener('load', hideLoader);
+        viewer.addEventListener('error', hideLoader); // Nascondi comunque se fallisce
+        
+        // Sicurezza: Rimuove loader dopo max 12 secondi
+        setTimeout(hideLoader, 12000); 
+
+        // 4. Logica Modale Checkout
+        const modal = document.getElementById('checkout-modal');
+        const btnClose = document.getElementById('close-modal');
+        const openBtns = document.querySelectorAll('.open-checkout');
+        
+        const stepShipping = document.getElementById('step-shipping');
+        const stepPayment = document.getElementById('step-payment');
+        const stepProcessing = document.getElementById('step-processing');
+        const stepSuccess = document.getElementById('step-success');
+        
+        const formShipping = document.getElementById('shipping-form');
+        const formPayment = document.getElementById('payment-form');
+
+        // Apri e chiudi modale
+        openBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                modal.classList.remove('hidden');
+                document.body.classList.add('no-scroll');
+            });
+        });
+
+        const resetAndCloseModal = () => {
+            modal.classList.add('hidden');
+            document.body.classList.remove('no-scroll');
+            // Reset state per prossimo ordine
+            setTimeout(() => {
+                formShipping.reset();
+                formPayment.reset();
+                stepShipping.classList.remove('hidden');
+                stepPayment.classList.add('hidden');
+                stepProcessing.classList.add('hidden');
+                stepSuccess.classList.add('hidden');
+            }, 500);
+        };
+
+        btnClose.addEventListener('click', resetAndCloseModal);
+        document.getElementById('btn-close-success').addEventListener('click', resetAndCloseModal);
+
+        // Flusso Form
+        formShipping.addEventListener('submit', (e) => {
+            e.preventDefault(); // Impedisce refresh pagina
+            stepShipping.classList.add('hidden');
+            stepPayment.classList.remove('hidden');
+        });
+
+        document.getElementById('btn-back-shipping').addEventListener('click', () => {
+            stepPayment.classList.add('hidden');
+            stepShipping.classList.remove('hidden');
+        });
+
+        formPayment.addEventListener('submit', (e) => {
+            e.preventDefault();
+            stepPayment.classList.add('hidden');
+            stepProcessing.classList.remove('hidden');
+            
+            // Simula elaborazione pagamento (2.5 sec)
+            setTimeout(() => {
+                stepProcessing.classList.add('hidden');
+                stepSuccess.classList.remove('hidden');
+            }, 2500);
+        });
+
+        // 5. Switch Metodo Pagamento
+        const radioCard = document.getElementById('radio-card');
+        const radioPaypal = document.getElementById('radio-paypal');
+        
+        const labelCard = document.getElementById('label-card');
+        const labelPaypal = document.getElementById('label-paypal');
+        const iconCard = document.getElementById('icon-card');
+        const textCard = document.getElementById('text-card');
+        const iconPaypal = document.getElementById('icon-paypal');
+        const textPaypal = document.getElementById('text-paypal');
+        
+        const cardFields = document.getElementById('card-fields');
+        const paypalFields = document.getElementById('paypal-fields');
+
+        const updatePaymentUI = () => {
+            if (radioCard.checked) {
+                // Stile Carta Attiva
+                labelCard.className = "flex-1 flex flex-col items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-colors border-cyan-500 bg-cyan-500/10";
+                iconCard.className = "w-8 h-8 mb-2 text-cyan-400";
+                textCard.className = "text-sm font-bold text-cyan-400";
+                
+                // Stile PayPal Disattiva
+                labelPaypal.className = "flex-1 flex flex-col items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-colors border-slate-800 bg-slate-950 hover:bg-slate-900";
+                iconPaypal.innerHTML = 'Pay<span class="text-slate-600">Pal</span>';
+                iconPaypal.className = "text-2xl font-black italic mb-1 text-slate-500";
+                textPaypal.className = "text-sm font-bold text-slate-400";
+                
+                // Mostra input
+                cardFields.classList.remove('hidden');
+                paypalFields.classList.add('hidden');
+                
+                // Attiva required
+                document.getElementById('cardNumber').required = true;
+                document.getElementById('expiry').required = true;
+                document.getElementById('cvc').required = true;
+            } else {
+                // Stile PayPal Attiva
+                labelPaypal.className = "flex-1 flex flex-col items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-colors border-blue-500 bg-blue-500/10";
+                iconPaypal.innerHTML = 'Pay<span class="text-blue-300">Pal</span>';
+                iconPaypal.className = "text-2xl font-black italic mb-1 text-blue-400";
+                textPaypal.className = "text-sm font-bold text-blue-400";
+                
+                // Stile Carta Disattiva
+                labelCard.className = "flex-1 flex flex-col items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-colors border-slate-800 bg-slate-950 hover:bg-slate-900";
+                iconCard.className = "w-8 h-8 mb-2 text-slate-500";
+                textCard.className = "text-sm font-bold text-slate-400";
+
+                // Mostra input
+                paypalFields.classList.remove('hidden');
+                cardFields.classList.add('hidden');
+                
+                // Disattiva required
+                document.getElementById('cardNumber').required = false;
+                document.getElementById('expiry').required = false;
+                document.getElementById('cvc').required = false;
+            }
+        };
+
+        radioCard.addEventListener('change', updatePaymentUI);
+        radioPaypal.addEventListener('change', updatePaymentUI);
+
+    </script>
+</body>
+</html>
